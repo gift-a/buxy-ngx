@@ -1,4 +1,5 @@
 <div class="transactions">
+  <div>{{tr | async | json}}</div>
   <div class="transactions__content" *ngIf="data && data.transactions.length">
     <app-transactions-charts [data]="data"></app-transactions-charts>
     <app-table-transactions [tableData]="data" (editClick)="handleEditTransactionClick($event)"

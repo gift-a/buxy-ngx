@@ -16,6 +16,14 @@ import { Transaction } from "../../interfaces/transaction.interface";
 import { Account } from "../../interfaces/account.interface";
 import { Tag } from "../../interfaces/tag.interface";
 
+import { Store } from "@ngrx/store";
+import * as TransactionsActions from "../../store/actions/transactions.actions";
+import { map } from "rxjs/operator/map";
+
+interface AppState {
+  transactions: Transaction[];
+}
+
 @Component({
   selector: "app-transactions",
   templateUrl: "./transactions.component.html",
@@ -25,19 +33,27 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   dataStream: Observable<TransactionsData>;
   dataSubscription: Subscription;
   data: TransactionsData;
+  tr: Observable<Transaction[]>;
 
   constructor(
     private dialog: MatDialog,
     private transactionsService: TransactionsService,
     private accountsService: AccountsService,
     private tagsService: TagsService,
-    private converter: CurrencyUahService
-  ) {}
+    private converter: CurrencyUahService,
+    private store: Store<AppState>
+  ) {
+    this.tr = this.store.select("transactions");
+  }
 
   ngOnInit() {
     const transactions: Observable<
       Transaction[]
     > = this.transactionsService.getList();
+    // const transactions: Observable<Transaction[]> = this.store.select("transactions").map(transactions => {
+    //   console.log(transactions);
+    //   return transactions;
+    // });
     const accounts: Observable<Account[]> = this.accountsService.getList();
     const tags: Observable<Tag[]> = this.tagsService.getList();
     this.dataStream = Observable.combineLatest(
@@ -57,7 +73,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   }
 
   addTransaction(data) {
-    return this.transactionsService.setData(data).subscribe();
+    this.store.dispatch(new TransactionsActions.AddOne(data));
   }
 
   editTransaction(data) {
