@@ -17,12 +17,8 @@ import { Account } from "../../interfaces/account.interface";
 import { Tag } from "../../interfaces/tag.interface";
 
 import { Store } from "@ngrx/store";
-import * as TransactionsActions from "../../store/actions/transactions.actions";
-import { map } from "rxjs/operator/map";
-
-interface AppState {
-  transactions: Transaction[];
-}
+import * as fromTransactions from "../../store/actions/transactions.action";
+import * as fromStore from "../../store";
 
 @Component({
   selector: "app-transactions",
@@ -41,9 +37,12 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     private accountsService: AccountsService,
     private tagsService: TagsService,
     private converter: CurrencyUahService,
-    private store: Store<AppState>
+    private store: Store<fromStore.ContentState>
   ) {
-    this.tr = this.store.select("transactions");
+    this.tr = this.store.select(fromStore.getTransactions).map(data => {
+      console.log(data);
+      return data;
+    });
   }
 
   ngOnInit() {
@@ -57,10 +56,11 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     const accounts: Observable<Account[]> = this.accountsService.getList();
     const tags: Observable<Tag[]> = this.tagsService.getList();
     this.dataStream = Observable.combineLatest(
-      transactions,
+      this.tr,
       accounts,
       tags,
       (transactions, accounts, tags) => {
+        console.dir(transactions);
         const uahTrans = transactions.map(data =>
           this.convertToUah(data, accounts)
         );
@@ -73,7 +73,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   }
 
   addTransaction(data) {
-    this.store.dispatch(new TransactionsActions.AddOne(data));
+    this.store.dispatch(new fromTransactions.AddOne(data));
   }
 
   editTransaction(data) {

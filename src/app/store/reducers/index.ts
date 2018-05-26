@@ -8,29 +8,49 @@ import {
 
 import * as fromTransactions from "./transactions.reducer";
 
-export interface State {
-  transactions: fromTransactions.State;
+export interface ContentState {
+  transactions: fromTransactions.TransactionsState;
 }
 
-export const reducers: ActionReducerMap<State> = {
+export const reducers: ActionReducerMap<ContentState> = {
   transactions: fromTransactions.reducer
 };
 
-export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
-  return function(state: State, action: any): State {
-    console.log("state", state);
-    console.log("action", action);
-    return reducer(state, action);
-  };
-}
+export const initialContentState: ContentState = {
+  transactions: fromTransactions.initialState
+};
 
-export const metaReducers: MetaReducer<State>[] = [logger];
+//????????????????
+export const getContentState = createFeatureSelector<ContentState>(
+  "ContentState"
+);
 
-export const getTransactionState = createFeatureSelector<
-  fromTransactions.State
->("transactions");
+export const getTransactionsState = createSelector(
+  getContentState,
+  (state: ContentState) => state.transactions
+);
 
 export const getTransactions = createSelector(
-  getTransactionState,
+  getTransactionsState,
   fromTransactions.getTransactions
 );
+
+export const getTransactionsLoading = createSelector(
+  getTransactionsState,
+  fromTransactions.getTransactionsLoading
+);
+
+export const getTransactionsIsLoaded = createSelector(
+  getTransactionsState,
+  fromTransactions.getTransactionsIsLoaded
+);
+
+// export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
+//   return function(state: State, action: any): State {
+//     console.log("state", state);
+//     console.log("action", action);
+//     return reducer(state, action);
+//   };
+// }
+
+// export const metaReducers: MetaReducer<State>[] = [logger];

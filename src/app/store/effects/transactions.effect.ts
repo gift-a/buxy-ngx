@@ -5,12 +5,12 @@ import { Observable } from "rxjs/Observable";
 import { of } from "rxjs/observable/of";
 
 import "rxjs/add/operator/map";
-import "rxjs/add/operator/mergeMap";
+import "rxjs/add/operator/switchMap";
 
 import { TransactionsService } from "../../storage/services/transactions.service";
-import * as transactionsActions from "../actions/transactions.actions";
+import * as transactionsActions from "../actions/transactions.action";
 
-export type Action = transactionsActions.Action;
+export type Action = transactionsActions.Actions;
 
 @Injectable()
 export class TransactionsEffects {
@@ -33,9 +33,6 @@ export class TransactionsEffects {
   addTransaction: Observable<Action> = this.actions
     .ofType(transactionsActions.ADD_ONE)
     .map((action: transactionsActions.AddOne) => action.payload)
-    .mergeMap(payload => {
-      this.db.setData(payload);
-      return payload;
-    })
-    .mergeMap(payload => new transactionsActions.AddOne(payload));
+    .switchMap(payload => this.db.setData(payload))
+    .map(addedData => new transactionsActions.AddOneSuccess(addedData));
 }
