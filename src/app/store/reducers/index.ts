@@ -16,14 +16,7 @@ export const reducers: ActionReducerMap<ContentState> = {
   transactions: fromTransactions.reducer
 };
 
-export const initialContentState: ContentState = {
-  transactions: fromTransactions.initialState
-};
-
-//????????????????
-export const getContentState = createFeatureSelector<ContentState>(
-  "ContentState"
-);
+export const getContentState = (state: ContentState) => state;
 
 export const getTransactionsState = createSelector(
   getContentState,

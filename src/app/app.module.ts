@@ -9,7 +9,7 @@ import { LayoutModule } from "./layout/layout.module";
 import { AuthModule } from "./auth/auth.module";
 import { AppRoutes } from "./app-routing.module";
 import { StorageModule } from "./storage/storage.module";
-import { reducers, initialContentState } from "./store/reducers";
+import { reducers } from "./store/reducers";
 import { TransactionsEffects } from "./store/effects/transactions.effect";
 
 import { AppComponent } from "./app/app.component";
@@ -20,7 +20,7 @@ import { AppComponent } from "./app/app.component";
     BrowserModule,
     BrowserAnimationsModule,
     EffectsModule.forRoot([TransactionsEffects]),
-    StoreModule.forRoot(reducers, { initialState: initialContentState }),
+    StoreModule.forRoot(reducers),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     AppRoutes,
     AuthModule,
