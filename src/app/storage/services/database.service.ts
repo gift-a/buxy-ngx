@@ -23,11 +23,14 @@ export class DatabaseService {
       .valueChanges();
   }
 
-  setData(dataType: string, data: any): Observable<void> {
+  setData<T>(dataType: string, data: any): Observable<T> {
     const dataToStore = Object.assign({}, data);
     dataToStore.id = this.db.createPushId();
-    return fromPromise(
-      this.db.list(`${this.path}/${dataType}`).set(dataToStore.id, dataToStore)
+    return fromPromise<T>(
+      this.db
+        .list(`${this.path}/${dataType}`)
+        .set(dataToStore.id, dataToStore)
+        .then(() => dataToStore)
     );
   }
 

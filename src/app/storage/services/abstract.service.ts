@@ -14,8 +14,8 @@ export abstract class AbstractService<T> {
     return this.db.getData<T>(this.getDataType(), dataId);
   }
 
-  setData(data: T): Observable<void> {
-    return this.db.setData(this.getDataType(), data);
+  setData(data: T): Observable<T> {
+    return this.db.setData<T>(this.getDataType(), data);
   }
 
   updateData(data: T): Observable<void> {
