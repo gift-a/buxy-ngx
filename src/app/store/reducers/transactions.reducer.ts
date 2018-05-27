@@ -1,57 +1,31 @@
 import { Action } from "@ngrx/store";
-import * as fromTransactions from "../actions/transactions.action";
+import { EntityState } from "@ngrx/entity";
+import * as fromTransactionsActions from "../actions/transactions.action";
+import * as fromTransactionsAdapter from "./transactions.adapter";
 
 import { Transaction } from "../../interfaces/transaction.interface";
 
-export interface TransactionsState {
-  data: Transaction[];
-  isLoaded: boolean;
-  loading: boolean;
-}
-export const initialState: TransactionsState = {
-  data: [],
-  isLoaded: false,
-  loading: false
-};
+export interface State extends EntityState<Transaction> {}
+
+export const initialState: State = fromTransactionsAdapter.adapter.getInitialState();
 
 export function reducer(
-  state: TransactionsState = initialState,
-  action: fromTransactions.Actions
-): TransactionsState {
-  console.log(state, action.type);
-
+  state: State = initialState,
+  action: fromTransactionsActions.Actions,
+  adapter = fromTransactionsAdapter.adapter
+): State {
   switch (action.type) {
-    case fromTransactions.GET_ALL: {
-      return {
-        ...state,
-        loading: true
-      };
+    case fromTransactionsActions.Types.GET_ALL_SUCCESS: {
+      return adapter.addAll(action.payload, state);
     }
 
-    case fromTransactions.GET_ALL_SUCCESS: {
-      return {
-        ...state,
-        loading: false,
-        isLoaded: true
-      };
+    case fromTransactionsActions.Types.ADD_ONE_SUCCESS: {
+      return adapter.addOne(action.payload, state);
     }
 
-    case fromTransactions.ADD_ONE_SUCCESS: {
-      const newTransaction: Transaction = action.payload;
-      const newState = {
-        ...state,
-        data: [...state.data, newTransaction]
-      };
-      console.log(newState);
-      return newState;
-    }
     default:
       return state;
   }
 }
 
-export const getTransactionsLoading = (state: TransactionsState) =>
-  state.loading;
-export const getTransactionsIsLoaded = (state: TransactionsState) =>
-  state.isLoaded;
-export const getTransactions = (state: TransactionsState) => state.data;
+// export const getTransactions = (state: State) => state;

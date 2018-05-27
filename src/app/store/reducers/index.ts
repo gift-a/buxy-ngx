@@ -6,44 +6,58 @@ import {
   MetaReducer
 } from "@ngrx/store";
 
-import * as fromTransactions from "./transactions.reducer";
+import * as fromTransactionsReducer from "./transactions.reducer";
+import * as fromTransactionsAdapter from "./transactions.adapter";
+import { environment } from "../../../environments/environment";
 
-export interface ContentState {
-  transactions: fromTransactions.TransactionsState;
+export interface State {
+  transactions: fromTransactionsReducer.State;
 }
 
-export const reducers: ActionReducerMap<ContentState> = {
-  transactions: fromTransactions.reducer
+export const reducers: ActionReducerMap<State> = {
+  transactions: fromTransactionsReducer.reducer
 };
 
-export const getContentState = (state: ContentState) => state;
+export const getContentState = (state: State) => state;
 
 export const getTransactionsState = createSelector(
   getContentState,
-  (state: ContentState) => state.transactions
+  (state: State) => state.transactions
 );
 
-export const getTransactions = createSelector(
+// export const getTransactions = createSelector(
+//   getTransactionsState,
+//   fromTransactionsReducer.getTransactions
+// );
+
+// export const getTransactionsLoading = createSelector(
+//   getTransactionsState,
+//   fromTransactionsReducer.getTransactionsLoading
+// );
+
+// export const getTransactionsIsLoaded = createSelector(
+//   getTransactionsState,
+//   fromTransactionsReducer.getTransactionsIsLoaded
+// );
+
+export const selectTransactionsEntities = createSelector(
   getTransactionsState,
-  fromTransactions.getTransactions
+  fromTransactionsAdapter.selectTransactionsEntities
 );
 
-export const getTransactionsLoading = createSelector(
+export const selectAllTransactions = createSelector(
   getTransactionsState,
-  fromTransactions.getTransactionsLoading
+  fromTransactionsAdapter.selectAllTransactions
 );
 
-export const getTransactionsIsLoaded = createSelector(
-  getTransactionsState,
-  fromTransactions.getTransactionsIsLoaded
-);
+export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
+  return function(state: State, action: any): State {
+    console.log("state", state);
+    console.log("action", action);
+    return reducer(state, action);
+  };
+}
 
-// export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
-//   return function(state: State, action: any): State {
-//     console.log("state", state);
-//     console.log("action", action);
-//     return reducer(state, action);
-//   };
-// }
-
-// export const metaReducers: MetaReducer<State>[] = [logger];
+export const metaReducers: MetaReducer<State>[] = !environment.production
+  ? [logger]
+  : [];

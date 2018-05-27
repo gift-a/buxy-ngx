@@ -37,18 +37,17 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     private accountsService: AccountsService,
     private tagsService: TagsService,
     private converter: CurrencyUahService,
-    private store: Store<fromStore.ContentState>
+    private store: Store<fromStore.State>
   ) {
-    this.tr = this.store.select(fromStore.getTransactions).map(data => {
-      console.log(data);
+    this.tr = this.store.select(fromStore.selectAllTransactions).map(data => {
       return data;
     });
   }
 
   ngOnInit() {
-    const transactions: Observable<
-      Transaction[]
-    > = this.transactionsService.getList();
+    // const transactions: Observable<
+    //   Transaction[]
+    // > = this.transactionsService.getList();
     // const transactions: Observable<Transaction[]> = this.store.select("transactions").map(transactions => {
     //   console.log(transactions);
     //   return transactions;
@@ -60,7 +59,6 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       accounts,
       tags,
       (transactions, accounts, tags) => {
-        console.dir(transactions);
         const uahTrans = transactions.map(data =>
           this.convertToUah(data, accounts)
         );

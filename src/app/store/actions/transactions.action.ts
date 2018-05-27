@@ -1,28 +1,32 @@
 import { Action } from "@ngrx/store";
+// import { Update } from "@ngrx/entity";
+
 import { Transaction } from "../../interfaces/transaction.interface";
 
-export const GET_ALL = "[Transactions] Get all";
-export const GET_ALL_SUCCESS = "[Transactions] Get all success";
-export const ADD_ONE = "[Transactions] Add One";
-export const ADD_ONE_SUCCESS = "[Transactions] Add one success";
+export enum Types {
+  GET_ALL = "[Transactions] Get all",
+  GET_ALL_SUCCESS = "[Transactions] Get all success",
+  ADD_ONE = "[Transactions] Add One",
+  ADD_ONE_SUCCESS = "[Transactions] Add one success"
+}
 
 export class GetAll implements Action {
-  readonly type = GET_ALL;
+  readonly type = Types.GET_ALL;
 }
 
 export class GetAllSuccess implements Action {
-  readonly type = GET_ALL_SUCCESS;
-  constructor(public payload: Transaction) {}
+  readonly type = Types.GET_ALL_SUCCESS;
+  constructor(public payload: Transaction[]) {}
 }
 
 export class AddOne implements Action {
-  readonly type = ADD_ONE;
+  readonly type = Types.ADD_ONE;
   constructor(public payload: Transaction) {}
 }
 
 export class AddOneSuccess implements Action {
-  readonly type = ADD_ONE_SUCCESS;
+  readonly type = Types.ADD_ONE_SUCCESS;
   constructor(public payload: Transaction) {}
 }
 
-export type Actions = AddOne | AddOneSuccess | GetAll | GetAllSuccess;
+export type Actions = GetAll | GetAllSuccess | AddOne | AddOneSuccess;
