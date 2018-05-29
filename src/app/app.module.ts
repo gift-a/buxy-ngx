@@ -12,6 +12,7 @@ import { StorageModule } from "./storage/storage.module";
 
 import { reducers, metaReducers } from "./store/reducers";
 import { UserEffects } from "./store/effects/user.effect";
+import { TransactionsEffects } from "./store/effects/transactions.effect";
 
 import { AppComponent } from "./app/app.component";
 
@@ -20,7 +21,7 @@ import { AppComponent } from "./app/app.component";
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    EffectsModule.forRoot([UserEffects]),
+    EffectsModule.forRoot([UserEffects, TransactionsEffects]),
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     AppRoutes,

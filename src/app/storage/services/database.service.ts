@@ -17,17 +17,24 @@ export class DatabaseService {
     return this.db.list<T>(`${this.path}/${dataType}`).valueChanges();
   }
 
+  getListUid<T>(uid: string, dataType: string): Observable<T[]> {
+    return this.db.list<T>(`users/${uid}/${dataType}`).valueChanges();
+  }
+
   getData<T>(dataType: string, dataId: string): Observable<T> {
     return this.db
       .object<T>(`${this.path}/${dataType}/${dataId}`)
       .valueChanges();
   }
 
-  setData(dataType: string, data: any): Observable<void> {
-    const dataToStore = Object.assign({}, data);
+  setData<T>(dataType: string, data: T): Observable<T> {
+    const dataToStore = Object.assign({ id: "" }, data);
     dataToStore.id = this.db.createPushId();
     return fromPromise(
-      this.db.list(`${this.path}/${dataType}`).set(dataToStore.id, dataToStore)
+      this.db
+        .list(`${this.path}/${dataType}`)
+        .set(dataToStore.id, dataToStore)
+        .then(() => dataToStore)
     );
   }
 
