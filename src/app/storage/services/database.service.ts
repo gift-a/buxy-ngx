@@ -5,9 +5,25 @@ import { fromPromise } from "rxjs/observable/fromPromise";
 
 import { AuthService } from "../../auth/auth/auth.service";
 
+import * as fromStore from "../../store";
+import * as fromUserActions from "../../store/actions/user.action";
+import { Store } from "@ngrx/store";
+import { User } from "../../interfaces/user.interface";
+import "rxjs/add/operator/switchMap";
+import "rxjs/add/operator/mergeMap";
+import "rxjs/add/operator/filter";
+
 @Injectable()
 export class DatabaseService {
-  constructor(private db: AngularFireDatabase, private auth: AuthService) {}
+  user$: Observable<User>;
+  constructor(
+    private db: AngularFireDatabase,
+    private auth: AuthService,
+    private store: Store<fromStore.State>
+  ) {
+    this.user$ = this.store.select("user");
+    this.store.dispatch(new fromUserActions.GetUser());
+  }
 
   get path() {
     return `users/${this.auth.currentUser.uid}`;
@@ -15,7 +31,11 @@ export class DatabaseService {
 
   getList<T>(dataType: string): Observable<T[]> {
     console.log("db getList " + dataType);
-    return this.db.list<T>(`${this.path}/${dataType}`).valueChanges();
+    return this.user$
+      .filter(user => !!(user && user.uid))
+      .mergeMap(user =>
+        this.db.list<T>(`users/${user.uid}/${dataType}`).valueChanges()
+      );
   }
 
   getData<T>(dataType: string, dataId: string): Observable<T> {

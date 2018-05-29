@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 
 import { AngularFireAuth } from "angularfire2/auth";
 import * as firebase from "firebase/app";
+import { Observable } from "@firebase/util";
 
 @Injectable()
 export class AuthService {
@@ -9,6 +10,10 @@ export class AuthService {
 
   get currentUser() {
     return this._firebaseAuth.auth.currentUser;
+  }
+
+  authState() {
+    return this._firebaseAuth.authState;
   }
 
   signInWithGoogle() {

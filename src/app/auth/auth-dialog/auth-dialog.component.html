@@ -6,8 +6,8 @@
         <mat-form-field class="dialog__input">
           <input type="email" placeholder="Email" formControlName="email" pattern="\S+@[a-z]+.[a-z]+"
             required matInput>
-          <mat-error *ngIf="userForm.controls.email.hasError('required')">Email is required</mat-error>
-          <mat-error *ngIf="userForm.controls.email.hasError('pattern')">The email address not valid
+          <mat-error *ngIf="userForm.controls['email'].hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="userForm.controls['email'].hasError('pattern')">The email address not valid
           </mat-error>
         </mat-form-field>
       </div>
@@ -15,8 +15,8 @@
         <mat-form-field class="dialog__input">
           <input matInput type="password" placeholder="Password" formControlName="password"
             minlength="8" required>
-          <mat-error *ngIf="userForm.controls.password.hasError('required')">Password is required</mat-error>
-          <mat-error *ngIf="userForm.controls.password.hasError('minlength')">Password must be 8 characters long
+          <mat-error *ngIf="userForm.controls['password'].hasError('required')">Password is required</mat-error>
+          <mat-error *ngIf="userForm.controls['password'].hasError('minlength')">Password must be 8 characters long
           </mat-error>
         </mat-form-field>
       </div>

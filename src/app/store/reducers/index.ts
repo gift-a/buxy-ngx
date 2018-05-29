@@ -8,13 +8,16 @@ import {
 
 import * as fromTransactionsReducer from "./transactions.reducer";
 import * as fromTransactionsAdapter from "./transactions.adapter";
+import * as fromUserReducer from "./user.reducer";
 import { environment } from "../../../environments/environment";
 
 export interface State {
+  user: fromUserReducer.State;
   transactions: fromTransactionsReducer.State;
 }
 
 export const reducers: ActionReducerMap<State> = {
+  user: fromUserReducer.reducer,
   transactions: fromTransactionsReducer.reducer
 };
 
